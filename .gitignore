@@ -1,10 +1,13 @@
-# Byte-compiled / optimized / DLL files
+m# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 .DS_Store
 # C extensions
 *.so
+
+## dataset of HW4
+sentiment140.csv
 
 # Distribution / packaging
 .Python
