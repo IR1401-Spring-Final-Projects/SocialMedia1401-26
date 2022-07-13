@@ -37,7 +37,7 @@ class Preprocessor:
         
         nltk.download('stopwords')
         self.stoplist = stopwords.words('english') 
-        self.stoplist = set(self.stoplist).union({"rt", "replied", "RT"})
+        self.stoplist = set(self.stoplist).union({"rt", "replied", "RT", "'", "s", "S", "k", "."})
         
         self.w_tokenizer = nltk.tokenize.WhitespaceTokenizer()
         self.lemmatizer = nltk.stem.WordNetLemmatizer()
@@ -203,7 +203,6 @@ class Preprocessor:
         cleaned_tweets = []
         for tweet in tqdm(df.Text):
             cleaned_tweet = self.cleaning_and_preprocessing(tweet)
-    #        print(tweet, "->", cleaned_tweet)
             cleaned_tweets.append(cleaned_tweet)
 
         df["cleaned_tweets"] = cleaned_tweets
@@ -234,7 +233,17 @@ class Preprocessor:
 
         pattern = re.compile(pattern)
         nltk_tokenized_tweets = [nltk.regexp_tokenize(tweet, pattern) for tweet in df.lemmatized_tweets]
-        df['Text_words'] = nltk_tokenized_tweets
+        
+        nltk_tokenized_tweets_final = []
+        for tweet_tokens in nltk_tokenized_tweets:
+            tweet_tokens_final = []
+            for word in tweet_tokens:
+                if word not in self.stoplist:
+                    tweet_tokens_final.append(word)
+            nltk_tokenized_tweets_final.append(tweet_tokens_final)
+    
+        
+        df['Text_words'] = nltk_tokenized_tweets_final
         return df
     
     def perform_clean_lemmatize_tokenize(self, df):
