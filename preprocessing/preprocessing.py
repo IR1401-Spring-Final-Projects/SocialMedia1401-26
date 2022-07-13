@@ -30,7 +30,7 @@ nltk.download('omw-1.4')
 class Preprocessor:
     def __init__(self):
     
-        contraction_map_path = '../contraction_map.json'
+        contraction_map_path = 'preprocessing/contraction_map.json'
         # contraction_map_path = '/content/gdrive/MyDrive/MIR-HW4/contraction_map.json'
         with open(contraction_map_path) as f:
             self.contraction_map = json.load(f)
