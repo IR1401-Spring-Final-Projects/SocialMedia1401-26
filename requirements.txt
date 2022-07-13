@@ -1,0 +1,11 @@
+numpy
+pandas
+openpyxl
+nltk
+sklearn
+fasttext
+wordcloud
+sentence-transformers
+seaborn
+autocorrect
+Unidecode
