@@ -2,10 +2,6 @@ import React from "react";
 import '../App.css';
 
 export class ResultItem extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         let index, text, score, words;
         ({index, text, Score: score, words} = this.props.data);
