@@ -5,6 +5,8 @@ __pycache__/
 .DS_Store
 # C extensions
 *.so
+.idea/*
+.idea/inspectionProfiles/Project_Default.xml
 #all_embeddings.npy
 ## dataset of HW4
 sentiment140.csv
