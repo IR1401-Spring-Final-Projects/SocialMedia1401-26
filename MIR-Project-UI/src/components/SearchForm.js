@@ -1,3 +1,5 @@
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 import React, {Component} from "react";
 import * as queryString from "query-string";
 import {SERVER_IP_ADDRESS} from "../constants";
@@ -62,28 +64,23 @@ class SearchForm extends Component {
         return <div className={small ? "col-sm col-md col-lg-6" : ""}>
             <div className="input-group">
                 <div className="input-group-prepend ">
-                    <div className="input-group-text dropdown dropdown-toggle"
-                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                         style={{
-                             borderRadius: "2.25rem 0% 0% 2.25rem",
-                             cursor: "pointer"
-                         }}>
-                        {searchModes[searchMode]}
-                    </div>
-                    <div className="dropdown-menu">
+                    <DropdownButton
+                        id="dropdown-basic-button"
+                        className="input-group-text p-0 m-0 dropdown-input"
+                        title={searchModes[searchMode]}                        >
                         {
                             searchModes.map((value, index) =>
-                                <button className={"dropdown-item " + (searchMode === index ? "active" : "")}
-                                        onClick={() => this.handleChangeSearchMode(index)}
-                                        key={index}
-                                        type="button">{value}
-                                </button>)
+                                <Dropdown.Item
+                                    onClick={() => this.handleChangeSearchMode(index)}
+                                    key={index}>
+                                    {value}
+                                </Dropdown.Item>)
                         }
-                    </div>
+                    </DropdownButton>
                 </div>
                 <input id="queryInput"
                        style={{borderRadius: "0% 2.25rem 2.25rem 0%"}}
-                       className={(small ? "form-control d-flex justify-content-center" : "form-control d-flex")}
+                       className={(small ? "form-control d-flex justify-content-center p-0 m-0" : "p-0 m-0 form-control d-flex")}
                        type="text"
                        placeholder="Search"
                        name="query"
