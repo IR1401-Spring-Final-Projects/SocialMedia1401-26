@@ -12,7 +12,7 @@ class QueryExpander:
         self.model = BertForMaskedLM.from_pretrained("./nextWordModel/model")
         self.tokenizer = BertTokenizer.from_pretrained("./nextWordModel/tokenizer")
     
-    def get_next_word(self, query):
+    def get_query_suggestions(self, query):
         
         m_query = query.strip() + " [MASK]."
         print(m_query)
