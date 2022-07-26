@@ -193,27 +193,15 @@ class FastText:
 
 
 class TransformerSearch:
-    def __init__(self, df):
-        self.model = SentenceTransformer('all-MiniLM-L6-v2')
+    def __init__(self):
+        self.model = SentenceTransformer('../transformer-model')
         self.preprocessor = Preprocessor()
-
-        # self.all_embeddings = []
-        # for tweet in tqdm(df.Text_words):
-        #     joined_tweet = " ".join(tweet)
-        #     tweet_embedding = self.model.encode(joined_tweet)
-        #     self.all_embeddings.append(tweet_embedding)
-        #
-        # with open('/content/gdrive/MyDrive/MIR-HW3-Transformer/all_embeddings.npy', 'wb') as f:
-        #     np.save(f, self.all_embeddings)
-
-        self.all_embeddings = np.load("../all_embeddings.npy")
+        self.all_embeddings = np.load("./transformer_embeddings.npy")
 
     def search(self, k, query):
         cleaned = self.preprocessor.clean_query(query)
         cleaned = ' '.join(cleaned)
-
         encoded_q = self.model.encode([cleaned])
-
         scores = np.array([(1 - cosine(doc, encoded_q)) for doc in self.all_embeddings])
         tops = scores.argsort()[-k:][::-1]
         print(tops)
@@ -227,4 +215,4 @@ class TransformerSearch:
         return a
 
 
-models = [FastText(), BooleanSearch(), TFIDFSearch(), ]
+models = [FastText(), BooleanSearch(), TFIDFSearch(), TransformerSearch()]
