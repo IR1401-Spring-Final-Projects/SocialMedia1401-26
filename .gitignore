@@ -10,6 +10,7 @@ __pycache__/
 #all_embeddings.npy
 ## dataset of HW4
 sentiment140.csv
+nextWordModel
 
 # Distribution / packaging
 .Python
