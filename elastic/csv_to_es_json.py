@@ -14,6 +14,7 @@ def csv_to_json(csvFilePath, jsonFilePath):
             for row in csvReader: 
                 jsonf.write(jsonString)
                 jsonf.write("\n")
+                row['index'] = row['']
                 row.pop('')
                 row.pop('cleaned_tweets')
                 row.pop('lemmatized_tweets')

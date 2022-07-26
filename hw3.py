@@ -9,6 +9,7 @@ from scipy.spatial.distance import cosine
 from sentence_transformers import SentenceTransformer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from tqdm import tqdm
+from elasticsearch import Elasticsearch
 
 from preprocessing.preprocessing import Preprocessor
 
@@ -215,4 +216,22 @@ class TransformerSearch:
         return a
 
 
-models = [FastText(), BooleanSearch(), TFIDFSearch(), TransformerSearch()]
+class ElasticSearch:
+    def __init__(self):
+        pass
+
+    def search(self, k, query):
+        es = Elasticsearch('https://localhost:9200', ca_certs="elastic/http_ca.crt", http_auth=('elastic', 'elastic'))
+        resp = es.search(index="mir", query={"query_string": {"query": query, "default_field": "Text"}}, size=k)
+        hits = resp['hits']['hits']
+
+        a = pd.DataFrame()
+        for i in range(len(hits)):
+            index = int(hits[i]['_source']['index'])
+            a.loc[i, 'index'] = str(index)
+            a.loc[i, 'text'] = df.iloc[index]['Text']
+            a.loc[i, 'words'] = str(df.iloc[index]['Text_words'])
+            a.loc[i, 'Score'] = hits[i]['_score']
+        return a
+
+models = [FastText(), BooleanSearch(), TFIDFSearch(), TransformerSearch(), ElasticSearch()]
