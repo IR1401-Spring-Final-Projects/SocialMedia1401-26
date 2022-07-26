@@ -35,3 +35,24 @@
     color: #3a3a3a;
     font-size: 16px;
 }
+
+.dropdown-input {
+    background-color: transparent !important;
+    border-width: 0 !important;
+}
+
+#queryInput {
+    padding-left: 10px!important;
+    margin-top: 1px!important;
+    margin-bottom: 1px!important;
+}
+
+.dropdown-input button {
+    color: black !important;
+    background-color: white !important;
+    border-width: 0 !important;
+    text-shadow: transparent !important;
+    box-shadow: transparent !important;
+    border-image-width: 0!important;
+    border-radius: 2.25rem 0 0 2.25rem !important;
+}
