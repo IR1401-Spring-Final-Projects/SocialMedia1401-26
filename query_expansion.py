@@ -6,8 +6,11 @@ import torch
 
 class QueryExpander:
     def __init__(self):
-        self.model = BertForMaskedLM.from_pretrained("/Users/kian/Desktop/MIR/MIR-Project/nextWordModel/model")
-        self.tokenizer = BertTokenizer.from_pretrained("/Users/kian/Desktop/MIR/MIR-Project/nextWordModel/tokenizer")
+        ##
+        ## You can download the folder "nextWordModel" from https://drive.google.com/drive/folders/1ny3-cA_MQz6wPLmhFi3GVxusoipkNQjX?usp=sharing
+        ##
+        self.model = BertForMaskedLM.from_pretrained("./nextWordModel/model")
+        self.tokenizer = BertTokenizer.from_pretrained("./nextWordModel/tokenizer")
     
     def get_next_word(self, query):
         
