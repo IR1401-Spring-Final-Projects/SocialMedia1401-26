@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask import jsonify
 from flask_cors import CORS
 
+from clustering import find_cluster
 from hw3 import models
 
 app = Flask(__name__)
@@ -25,3 +26,10 @@ def query_model():
         model = models[0]
     results = model.search(10, query)
     return results.to_json(orient="records")
+
+
+@app.route("/clustering", methods=['GET'])
+def clustering_api():
+    query = request.args.get("query")
+    print(f"query> '{query}'")
+    return find_cluster(query)
