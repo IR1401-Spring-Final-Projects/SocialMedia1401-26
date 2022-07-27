@@ -4,9 +4,12 @@ from flask_cors import CORS
 
 from clustering import find_cluster
 from hw3 import models
+from query_expansion import QueryExpander
 
 app = Flask(__name__)
 CORS(app)
+
+qe = QueryExpander()
 
 
 @app.route("/hw3/models")
@@ -33,3 +36,10 @@ def clustering_api():
     query = request.args.get("query")
     print(f"query> '{query}'")
     return find_cluster(query)
+
+
+@app.route("/qe", methods=['GET'])
+def query_expander():
+    query = request.args.get("query")
+    print(f"query> '{query}'")
+    return {"suggestions": qe.get_query_suggestions(query)}
