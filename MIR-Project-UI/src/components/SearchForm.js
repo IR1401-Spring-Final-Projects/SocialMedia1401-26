@@ -1,5 +1,10 @@
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
+import ListGroup from 'react-bootstrap/ListGroup';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row'
 import React, {Component} from "react";
 import * as queryString from "query-string";
 import {SERVER_IP_ADDRESS} from "../constants";
@@ -10,22 +15,27 @@ class SearchForm extends Component {
         let mode = queryString.parse(window.location.search).mode;
         if (!mode)
             mode = "0";
+        let query = queryString.parse(window.location.search).query;
         this.state = {
             searchModes: [],
+            suggestions: [],
+            query,
             searchMode: parseInt(mode)
         };
-        SearchForm.submit = SearchForm.submit.bind(this);
+        this.submit = this.submit.bind(this);
         this.searchInput = this.searchInput.bind(this);
         this.handleChangeSearchMode = this.handleChangeSearchMode.bind(this)
+        this.handleSearchInputChange = this.handleSearchInputChange.bind(this)
     }
 
 
-    static submit(e) {
+    submit(e) {
         e.preventDefault();
-        let input = document.getElementById("queryInput");
-        let params = queryString.parse(window.location.search);
-        params.query = input.value;
-        let url = "/search?" + queryString.stringify(params);
+
+        let query = this.state.query
+        let mode = this.state.searchMode
+
+        let url = "/search?" + queryString.stringify({ query, mode });
         console.log("url: " + url);
         window.location = url;
     }
@@ -34,9 +44,8 @@ class SearchForm extends Component {
         const {small} = this.props;
         let searchInput = this.searchInput();
         return (
-            <form className={small ? "" : "container-fluid"} action={"/search"} method="GET"
-                  onSubmit={SearchForm.submit}>
-                <div className={small ? "row" : ""}>
+            <Row as={Form} action={"/search"} className="w-100 flex-grow-1"  method="GET"
+                  onSubmit={this.submit}>
                     {searchInput}
                     <div className={small ? "col-3" : ""}>
                         <div className={small ? "col-10" : "d-flex justify-content-center mt-5"}>
@@ -45,8 +54,7 @@ class SearchForm extends Component {
                                    value="Search"/>
                         </div>
                     </div>
-                </div>
-            </form>
+            </Row>
         )
     }
 
@@ -60,33 +68,42 @@ class SearchForm extends Component {
     searchInput() {
         let searchModes = this.state.searchModes
         let searchMode = this.state.searchMode;
-        const {small} = this.props;
-        return <div className={small ? "col-sm col-md col-lg-6" : ""}>
-            <div className="input-group">
-                <div className="input-group-prepend ">
-                    <DropdownButton
-                        id="dropdown-basic-button"
-                        className="input-group-text p-0 m-0 dropdown-input"
-                        title={searchModes[searchMode]}                        >
-                        {
-                            searchModes.map((value, index) =>
-                                <Dropdown.Item
-                                    onClick={() => this.handleChangeSearchMode(index)}
-                                    key={index}>
-                                    {value}
-                                </Dropdown.Item>)
-                        }
-                    </DropdownButton>
-                </div>
-                <input id="queryInput"
-                       style={{borderRadius: "0% 2.25rem 2.25rem 0%"}}
-                       className={(small ? "form-control d-flex justify-content-center p-0 m-0" : "p-0 m-0 form-control d-flex")}
-                       type="text"
-                       placeholder="Search"
-                       name="query"
-                       defaultValue={this.props.defaultValue}/>
-            </div>
-        </div>
+        let query = this.state.query
+        let suggestions = this.state.suggestions
+        const { small } = this.props;
+        return (
+                <Col md={small ? 4 : 8} className="flex-grow-1">
+                    <InputGroup className="">
+                        <DropdownButton
+                            id="dropdown-basic-button"
+                            variant="outline-secondary"
+                            title={searchModes[searchMode]}>
+                            {
+                                searchModes.map((value, index) =>
+                                    <Dropdown.Item
+                                        onClick={() => this.handleChangeSearchMode(index)}
+                                        key={index}>
+                                        {value}
+                                    </Dropdown.Item>)
+                            }
+                        </DropdownButton>
+                        <Form.Control aria-label="Text input with dropdown button" value={query} onChange={this.handleSearchInputChange} />
+                    </InputGroup>
+                        <ListGroup>
+                            {
+                                suggestions.map((suggestion) => (
+                                    <ListGroup.Item onClick={(e) => {
+                                        e.preventDefault();
+                                     this.setState({
+                                        query: suggestion
+                                    })}} action>
+                                        {suggestion}
+                                    </ListGroup.Item>
+                                ))
+                            }
+                        </ListGroup>
+                </Col>
+        )
     }
 
     handleChangeSearchMode(searchMode) {
@@ -95,6 +112,19 @@ class SearchForm extends Component {
         let url = (this.props.small ? "/search?" : "?") + queryString.stringify(params);
         console.log("url: " + url);
         window.location = url;
+    }
+
+    handleSearchInputChange(e) {
+        let query = e.target.value
+        console.log(query)
+        this.setState({query})
+        fetch(SERVER_IP_ADDRESS + `/qe?query=${encodeURIComponent(query)}`)
+            .then(result => result.json())
+            .then(result => {
+                console.log("Query suggestions");
+                console.log(result);
+                this.setState({suggestions: result.suggestions})
+            })
     }
 }
 

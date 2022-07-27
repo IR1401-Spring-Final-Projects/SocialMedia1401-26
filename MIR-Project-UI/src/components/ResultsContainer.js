@@ -8,15 +8,22 @@ import * as queryString from "query-string";
 export class ResultsContainer extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {pages: [], isLoaded: false};
+        this.state = {pages: [], isLoaded: false, cluster_label: 0, cluster_keywords: []};
         let query = this.props.location.search;
         this.getPages = this.getPages.bind(this);
         let url = SERVER_IP_ADDRESS + '/hw3/query' + decodeURIComponent(query);
         console.log("sending request to: ", url);
         fetch(url).then(res => res.json()).then(results => {
+            console.log("results")
             console.log(results);
             return this.setState({results: results, isLoaded: true});
         });
+        let cluster_url = SERVER_IP_ADDRESS + '/clustering' + decodeURIComponent(query);
+        fetch(cluster_url).then(res => res.json()).then(result => {
+            console.log("cluster")
+            console.log(result)
+            return this.setState({cluster_label: result.cluster, cluster_keywords: result.keywords})
+        })
     }
 
     static getSpinner() {
@@ -57,9 +64,20 @@ export class ResultsContainer extends React.Component {
 
     getPages() {
         let pages = this.state.results;
+        let cluster_label = this.state.cluster_label;
+        let cluster_keywords = this.state.cluster_keywords;
         return (
-            <div className="mt-1 col-8 p-1">
-                {pages.map((value, index) => <ResultItem key={index} data={value}/>)}
+            <div className="row mt-3">
+                <div className="col-8">
+                    {pages.map((value, index) => <ResultItem key={index} data={value}/>)}
+                </div>
+                <div className="col-4">
+                    <p className="m-0 p-0 text-success">Cluster-{cluster_label}:</p>
+                    <div className="ml-4">
+                        {cluster_keywords.map((value, index) => <li>{value}</li>)}
+                    </div>
+
+                </div>
             </div>
         )
     }
